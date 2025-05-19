@@ -26,12 +26,6 @@ scikit-learn
 
 pandas
 
-numpy
-
-matplotlib
-
-seaborn
-
 📊 Results
 Achieved high accuracy on test data.
 
@@ -64,11 +58,3 @@ Cross-validation
 
 Try other classifiers (Random Forest, SVM)
 
-👩‍🔬 Author
-Samuel Gebrekirstos
-
-GitHub: samigg2
-
-LinkedIn: Samuel Gebrekirstos
-
-# Breast-Cancer-Detection
