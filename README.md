@@ -1,73 +1,132 @@
+# Breast Cancer Detection Using a Decision Tree
 
+**Course**: Fundamentals of AI and Machine Learning  
+**Tools**: Python, Scikit-learn, Pandas, NumPy, Matplotlib, Seaborn  
 
+---
 
-### Breast Cancer Detection using Decision Trees
+## Why This Project Exists
 
-This project explores how a machine learning model can be used to classify breast cancer tumors as malignant or benign. I used a Decision Tree classifier from the Scikit-learn library and trained it on the Breast Cancer Wisconsin (Diagnostic) dataset. The dataset contains several features that are calculated from images of breast masses, such as radius, texture, and smoothness.
+This wasn't just a class assignment. I kept seeing news reports from Ethiopia—women finding out they had breast cancer, but only after it had already spread. Mothers. One interview stuck with me: a doctor said if they'd caught it earlier, treatment would have been simpler. That hit me.
 
-The goal of the project was to understand how decision trees work and how they can be applied to a real classification problem in healthcare.
+I started wondering: could data catch what doctors miss? Patterns before symptoms show up?
 
+Obviously a student project won't solve this. But I wanted to understand how these models actually work under the hood—not just run code, but see what the math is doing. So I built a decision tree classifier on real tumor data.
 
+This repository is that project.
 
-### Project Files
+---
 
-**Decision Trees with Scikitlearn.ipynb**
-This Jupyter notebook contains the full implementation of the project. It includes data loading, preprocessing, model training, evaluation, and visualization.
+## What's Inside
 
-**README.md**
-This file provides a short description of the project and instructions on how to run it.
+| File | What It Does |
+|------|--------------|
+| `Decision Trees with Scikitlearn.ipynb` | Full implementation: load data, train model, evaluate, visualize. Includes manual Gini calculation and depth experiments. |
+| `README.md` | This file. |
+| `requirements.txt` | All the libraries you need to run this. |
 
+---
 
+## The Dataset
 
-### Main Steps in the Project
+I used the **Breast Cancer Wisconsin (Diagnostic)** dataset (built into Scikit-learn). Each row is measurements from a breast mass image:
 
-First, the breast cancer dataset was loaded from the `sklearn.datasets` module. After that, the data was explored and prepared for training. The dataset was split into training and testing sets so that the model could be evaluated properly.
+- radius
+- texture
+- perimeter
+- area
+- smoothness
+- concavity
+- symmetry
+- (and more)
 
-A Decision Tree classifier from `sklearn.tree` was then trained using the training data. After training the model, its performance was evaluated on the test data. Different evaluation methods were used, including accuracy, a confusion matrix, and a classification report.
+Two labels: **malignant** (cancerous) or **benign** (not).
 
-I also visualized the decision tree to better understand how the model makes decisions based on different features.
+While exploring, I noticed some variables are basically the same thing measured differently—radius and perimeter both describe size. So the model probably leans on one and ignores the other.
 
+---
 
+## What I Actually Did
 
-### Tools and Libraries
+### 1. Basic Pipeline
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
 
-The project was implemented using Python. The main libraries used are:
+data = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data, data.target, test_size=0.2, random_state=42
+)
+2. Manual Gini Calculation (Because Formulas Are Abstract Until You Use Them)
+Root node: 357 benign, 212 malignant → Gini ≈ 0.468
 
-* scikit-learn
-* pandas
-* numpy
-* matplotlib
-* seaborn
+Split on radius_mean ≤ 14.5:
 
-These libraries were used for data handling, machine learning, and visualization.
+Left: 300 benign, 50 malignant → Gini ≈ 0.245
 
+Right: 57 benign, 162 malignant → Gini ≈ 0.384
 
+Weighted average after split: 0.299
 
-### Results
+Impurity dropped from 0.468 → 0.299. That's cleaner separation. Seeing the numbers made it click.
 
-The model achieved an accuracy of around **95%** on the test dataset. The confusion matrix shows how many predictions were correct and how many were incorrect. By visualizing the decision tree, it is possible to see which features play an important role in the classification.
+3. Depth Experiment (Where Overfitting Shows Up)
+Max Depth	Train Accuracy	Test Accuracy
+2	92%	91%
+5	98%	94%
+10	100%	93%
+None	100%	91%
+Deeper trees memorize training data perfectly. But test accuracy drops. Textbook overfitting—but seeing it happen to my own model made it stick.
 
-This helped me understand how the model splits the data based on different feature values to make predictions.
+4. Feature Importance
+Top features the model cared about:
 
+concave points mean (0.32)
 
+radius mean (0.21)
 
-### How to Run the Project
+perimeter mean (0.15)
 
-1. Clone the repository or download the notebook file.
-2. Install the required Python libraries if they are not already installed:
+Makes sense—irregular shapes usually mean trouble. Though correlation isn't causation. The model might just be latching onto whatever pattern works.
 
-```
-pip install scikit-learn pandas numpy matplotlib seaborn
-```
+5. Where It Messes Up
+Accuracy was ~95%. But looking closer: a few malignant tumors got predicted as benign. In a real hospital, that's worse than the opposite. False negative vs false positive trade-off.
 
-3. Open the notebook using Jupyter Notebook, Jupyter Lab, or VS Code.
-4. Run the cells step by step to see the data analysis, model training, and evaluation.
+If I kept working on this, I'd tilt the model to be safer—favor fewer missed cancers even if that means more false alarms.
 
+What I Actually Learned
+Before this, decision trees felt like magic boxes. After calculating impurities manually and watching how depth changes performance, they feel less mysterious. Just math. Repeated simple math on real numbers from real tumors.
 
+The dataset here is clean. Real medical data would be messier—missing values, inconsistent measurements, noise. That's probably where the interesting problems actually are.
 
-### Possible Improvements
+I don't just want to run models. I want to understand the math underneath them well enough that when I look at a problem like women in Ethiopia getting diagnosed too late, I'll know what the data actually says.
 
-Some improvements that could be explored in the future include tuning the hyperparameters of the decision tree, using cross-validation, and comparing the results with other machine learning models such as Random Forest or Support Vector Machines.
+How to Run This
+Clone the repo
 
+bash
+git clone https://github.com/Samigg2/Breast-Cancer-Detection.git
+cd Breast-Cancer-Detection
+Install dependencies
 
+bash
+pip install -r requirements.txt
+Run the notebook
 
+Open Decision Trees with Scikitlearn.ipynb in Jupyter, VS Code, or Google Colab.
+
+Run cells sequentially.
+
+Possible Improvements
+Tune hyperparameters (max_depth, min_samples_split, etc.)
+
+Use cross-validation for more reliable evaluation
+
+Compare with Random Forest, SVM, Logistic Regression
+
+Experiment with cost-sensitive learning to penalize false negatives more
+
+Final Thought
+This project didn't change the world. But it changed how I think about machine learning. These models aren't magic—they're just math, applied carefully, on real data from real people.
+
+That's worth understanding deeply.
