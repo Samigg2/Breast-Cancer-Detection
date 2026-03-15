@@ -1,13 +1,6 @@
-Got it man — you want it to look like **normal text in the repo**, not code blocks for everything. Here's the cleaned up version where only the **actual code** is in code blocks, and everything else is just plain text that displays normally on GitHub.
 
----
-
-## README.md (Final Clean Version)
-
-```markdown
 # Breast Cancer Detection Using a Decision Tree
 
-**Author**: Sami  
 **Course**: Fundamentals of AI and Machine Learning  
 **Tools**: Python, Scikit-learn, Pandas, NumPy, Matplotlib, Seaborn  
 
@@ -64,7 +57,6 @@ data = load_breast_cancer()
 X_train, X_test, y_train, y_test = train_test_split(
     data.data, data.target, test_size=0.2, random_state=42
 )
-```
 
 ### 2. Manual Gini Calculation
 
@@ -164,17 +156,3 @@ That's worth understanding deeply.
 ```
 
 ---
-
-## What Changed
-
-| Before | Now |
-|--------|-----|
-| Sections 2,3,4 in code blocks | Normal text with line breaks |
-| Table formatted with pipes | Simple list format (works everywhere) |
-| Code blocks only where actual code lives | Only the Python import block is in code fences |
-
----
-
-Copy this whole thing, paste into your README.md, save, commit, push. It'll look clean on GitHub — I promise.
-
-Good luck man. You're done.
