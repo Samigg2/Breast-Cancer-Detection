@@ -1,5 +1,3 @@
----
-
 # Breast Cancer Detection Using a Decision Tree
 
 ---
